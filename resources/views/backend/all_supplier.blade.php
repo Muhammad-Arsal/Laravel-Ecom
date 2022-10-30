@@ -14,15 +14,25 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <th scope="row">1</th>
-                                    <td>Bootstrap </td>
-                                    <td>
-                                        <button type="button" class="btn btn-success"><i class="fas fa-edit"></i></button>
-                                        <button type="button" class="btn btn-danger"><i
-                                                class="far fa-trash-alt"></i></button>
-                                    </td>
-                                </tr>
+                                @php
+                                    $supplier = \DB::table('supplier')->get();
+                                    $i = 1;
+                                @endphp
+                                @forelse ($supplier as $item)
+                                    <tr>
+                                        <th scope="row">{{ $i++ }}</th>
+                                        <td>{{ $item->supplier_name }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-success"><i
+                                                    class="fas fa-edit"></i></button>
+                                            <button type="button" class="btn btn-danger"><i
+                                                    class="far fa-trash-alt"></i></button>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <p>No record Found</p>
+                                @endforelse
+
                             </tbody>
                         </table>
                     </div>
