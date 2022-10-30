@@ -23,10 +23,10 @@
                                         <th scope="row">{{ $i++ }}</th>
                                         <td>{{ $item->supplier_name }}</td>
                                         <td>
-                                            <button type="button" class="btn btn-success"><i
-                                                    class="fas fa-edit"></i></button>
-                                            <button type="button" class="btn btn-danger"><i
-                                                    class="far fa-trash-alt"></i></button>
+                                            <a href="{{ route('edit.supplier.page', $item->id) }}"><button type="button"
+                                                    class="btn btn-success"><i class="fas fa-edit"></i></button></a>
+                                            <a href="{{ route('delete.supplier', $item->id) }}"><button type="button"
+                                                    class="btn btn-danger"><i class="far fa-trash-alt"></i></button></a>
                                         </td>
                                     </tr>
                                 @empty

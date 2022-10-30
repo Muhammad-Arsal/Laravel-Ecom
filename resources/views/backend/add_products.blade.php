@@ -27,6 +27,11 @@
                     <label for="">Supplier</label>
                     <select id="" class="custom-select" name="">
                         <option value="">Select Supplier</option>
+                        @forelse ($suppliers as $item)
+                            <option value="{{ $item->id }}">{{ $item->supplier_name }}</option>
+                        @empty
+                        @endforelse
+
                     </select>
                 </div>
                 <div class="form-group">

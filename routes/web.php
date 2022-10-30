@@ -61,8 +61,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/supplier_area/add_supplier', [SupplierDashController::class, 'addSupplier'])->name('add.supplier');
     Route::post('/admin/supplier_area/add_supplier', [SupplierDashController::class, 'storeSupplier'])->name('store.supplier');
     Route::get('/admin/supplier_area/all_supplier', [SupplierDashController::class, 'allSupplier'])->name('all.supplier');
+    Route::get('/admin/supplier_area/edit_supplier/{id}', [SupplierDashController::class, 'editSupplierPage'])->name('edit.supplier.page');
+    Route::post('/admin/supplier_area/edit_supplier/{id}', [SupplierDashController::class, 'updateSupplier'])->name('update.supplier.page');
     Route::get('/admin/supplier_area/defective_pieces', [SupplierDashController::class, 'defectivePiece'])->name('defective.pieces');
+    Route::get('/admin/supplier_area/delete_supplier/{id}', [SupplierDashController::class, 'destroySupplier'])->name('delete.supplier');
 
     Route::get('/admin/products', [ProductsController::class, 'index'])->name('admin.products');
     Route::get('/admin/add_products', [ProductsController::class, 'addProduct'])->name('admin.add.product');
+    Route::get('/admin/all_products', [ProductsController::class, 'allProduct'])->name('admin.all.product');
+    Route::get('/admin/all_product_categories', [ProductsController::class, 'allCategories'])->name('all.product.categories');
+    Route::get('/admin/add_product_categories', [ProductsController::class, 'addCategories'])->name('add.product.categories');
 });

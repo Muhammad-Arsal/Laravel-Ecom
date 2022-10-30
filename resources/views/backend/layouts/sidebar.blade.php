@@ -181,7 +181,7 @@
                           <a href="{{ route('admin.products') }}" class="nav-link">
                               <i class="nav-icon fas fa-edit"></i>
                               <p>
-                                  Products
+                                  Products Area
                               </p>
                           </a>
                       </li>
