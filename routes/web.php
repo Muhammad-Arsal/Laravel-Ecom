@@ -12,6 +12,7 @@ use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\SiteBlogController;
 use App\Http\Controllers\SupplierDashController;
+use App\Models\ProductCategory;
 use App\Models\Products;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -52,9 +53,11 @@ Route::middleware('auth')->group(function () {
     Route::get("/admin/all_posts/edit_post/{id}", [PostController::class, 'edit'])->name('admin.post.edit');
     Route::post('/admin/all_posts/edit_post/{id}', [PostController::class, 'update'])->name('admin.post.update');
 
+
     Route::get('/admin/all_categories', [AdminCategoryController::class, "view_all"])->name('admin.all_categories');
     Route::get('/admin/add_category', [AdminCategoryController::class, 'index'])->name('admin.add_category');
     Route::post('/admin/add_category', [AdminCategoryController::class, 'store']);
+
 
     Route::get('/admin/supplier_area', [SupplierDashController::class, 'index'])->name('supplier.area');
     Route::get('/admin/supplier_area/supplier_dashboard', [SupplierDashController::class, 'supplierDash'])->name('supplier.dash');
@@ -66,9 +69,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/supplier_area/defective_pieces', [SupplierDashController::class, 'defectivePiece'])->name('defective.pieces');
     Route::get('/admin/supplier_area/delete_supplier/{id}', [SupplierDashController::class, 'destroySupplier'])->name('delete.supplier');
 
+
+    Route::get('/admin/all_product_categories', [ProductsController::class, 'allCategories'])->name('all.product.categories');
+    Route::get('/admin/add_product_categories', [ProductsController::class, 'addCategories'])->name('add.product.categories');
+    Route::post('/admin/add_product_categories', [ProductsController::class, 'storeProductCategory'])->name('store.product.categories');
+    Route::get('/admin/edit_product_categories/{id}', [ProductsController::class, 'editCategory'])->name('edit.product.categories');
+    Route::post('/admin/update_product_categories/{id}', [ProductsController::class, 'updateProductCategory'])->name('update.product.categories');
+    Route::get('/admin/delete_product_category/{id}', [ProductsController::class, 'destroyProductCategory'])->name('delete.product.category');
+
+
     Route::get('/admin/products', [ProductsController::class, 'index'])->name('admin.products');
     Route::get('/admin/add_products', [ProductsController::class, 'addProduct'])->name('admin.add.product');
     Route::get('/admin/all_products', [ProductsController::class, 'allProduct'])->name('admin.all.product');
-    Route::get('/admin/all_product_categories', [ProductsController::class, 'allCategories'])->name('all.product.categories');
-    Route::get('/admin/add_product_categories', [ProductsController::class, 'addCategories'])->name('add.product.categories');
+    Route::post('/admin/all_products', [ProductsController::class, 'storeProducts'])->name('store.product');
 });

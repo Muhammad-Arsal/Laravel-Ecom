@@ -18,6 +18,8 @@
     <!-- overlayScrollbars -->
     <link rel="stylesheet" href="{{ url('backend/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
     <link rel="stylesheet" href="{{ url('backend/summernote/summernote.css') }}">
+    <link rel="stylesheet" href="{{ asset('backend/slim.min.css') }}">
+    @stack('style');
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">

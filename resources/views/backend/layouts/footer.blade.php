@@ -13,6 +13,8 @@
 <!-- AdminLTE App -->
 <script src="{{ url('backend/dist/js/adminlte.js') }}"></script>
 <script src="{{ url('backend/summernote/summernote.min.js') }}"></script>
+<script src="{{ asset('backend/slim.kickstart.min.js') }}"></script>
+<script src="{{ asset('backend/slim.multiple.js') }}"></script>
 @yield('js');
 </body>
 
