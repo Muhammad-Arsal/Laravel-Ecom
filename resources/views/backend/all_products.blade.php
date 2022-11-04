@@ -27,19 +27,37 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <th scope="row">1</th>
-                                    <td>Bootstrap </td>
-                                    <td>Cristina</td>
-                                    <td>2.846</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>
-                                        <button type="button" class="btn btn-success"><i class="fas fa-edit"></i></button>
-                                        <button type="button" class="btn btn-danger"><i
-                                                class="far fa-trash-alt"></i></button>
-                                    </td>
-                                </tr>
+                                @php
+                                    $i = 1;
+                                @endphp
+                                @forelse ($products as $item)
+                                    @php
+                                        $productImages = \DB::table('product_images')
+                                            ->where('product_id', $item->id)
+                                            ->first();
+                                        
+                                        $catName = \DB::table('products_category')
+                                            ->where('id', $item->category_id)
+                                            ->first();
+                                    @endphp
+                                    <tr>
+                                        <th scope="row">{{ $i++ }}</th>
+                                        <td><img src="{{ asset('frontend/prodImages' . '/' . $productImages->image_name) }}"
+                                                alt="" style="width: 150px; height: 100px;"></td>
+                                        <td>{{ $item->product_name }}</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>{{ $catName->name }}</td>
+                                        <td>
+                                            <a href="{{ route('edit.products', $item->id) }}"><button type="button"
+                                                    class="btn btn-success"><i class="fas fa-edit"></i></button></a>
+                                            <button type="button" class="btn btn-danger"><i
+                                                    class="far fa-trash-alt"></i></button>
+                                        </td>
+                                    </tr>
+                                @empty
+                                @endforelse
+
                             </tbody>
                         </table>
                     </div>

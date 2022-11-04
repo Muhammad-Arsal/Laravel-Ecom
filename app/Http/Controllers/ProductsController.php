@@ -9,28 +9,13 @@ use App\Models\ProductImages;
 use App\Models\Products;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 
 class ProductsController extends Controller
 {
     public function index()
     {
         return view('backend.product_area');
-    }
-
-    public function allProduct()
-    {
-        return view('backend.all_products');
-    }
-
-    public function addProduct()
-    {
-        $suppliers = Supplier::all();
-
-        $allCat = ProductCategory::all();
-
-        $data = compact('suppliers', 'allCat');
-
-        return view('backend.add_products')->with($data);
     }
 
     public function allCategories()
@@ -102,6 +87,46 @@ class ProductsController extends Controller
         return redirect()->route('all.product.categories');
     }
 
+    public function allProduct()
+    {
+        $products = Products::all();
+
+        $productImages = ProductImages::all();
+
+        $data = compact('products', 'productImages');
+
+        return view('backend.all_products')->with($data);
+    }
+
+    public function addProduct()
+    {
+        $suppliers = Supplier::all();
+
+        $allCat = ProductCategory::all();
+
+        $data = compact('suppliers', 'allCat');
+
+        return view('backend.add_products')->with($data);
+    }
+
+    public function editRelativeProduct($id)
+    {
+        $productDetails = Products::find($id);
+
+        $suppliers = Supplier::all();
+
+        $allCat = ProductCategory::all();
+
+        $data = compact('productDetails', 'suppliers', 'allCat');
+
+        return view('backend.edit_products')->with($data);
+    }
+
+    public function updateProduct(Request $request, $id)
+    {
+        $product = Products::find($id);
+    }
+
     public function storeProducts(Request $request)
     {
         $request->validate([
@@ -144,6 +169,8 @@ class ProductsController extends Controller
                 $images->save();
             }
         }
+
+        return redirect()->route('admin.all.product');
     }
 
     private function handleCropper($name)
@@ -159,10 +186,18 @@ class ProductsController extends Controller
             $singleImgData  = array_shift($cropperImg);
             $name           = $singleImgData['output']['name'];
             $base64Data     = $singleImgData['output']['data'];
-            // $path = FCPATH . 'frontend/productImages';
             $output         = Slim::saveFile($base64Data, $name);
 
             return $output['name'];
         }
+    }
+
+    public function destroyProductImage($id)
+    {
+        $productsImages = ProductImages::find($id);
+
+        $productsImages->delete();
+
+        return redirect()->route('edit.products');
     }
 }
