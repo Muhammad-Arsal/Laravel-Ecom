@@ -125,54 +125,6 @@ class ProductsController extends Controller
         return view('backend.edit_products')->with($data);
     }
 
-    public function updateProduct(Request $request, $id)
-    {
-        $product = Products::find($id);
-        $connectedImages = ProductImages::where('product_id', $id)->get();
-
-        $product->product_name = $request['product_name'];
-        $product->description = $request['product_description'];
-        $product->detail = $request['product_detail'];
-        $product->category_id = $request['category_id'];
-        $product->supplier_id = $request['supplier_id'];
-        $product->save();
-
-        $relativeImages = \App\Models\ProductImages::where('product_id', $id)->get();
-
-        if ($request['product_images']) {
-
-            foreach ($relativeImages as $newItem) {
-                unlink(public_path('frontend/prodImages' . '/' . $newItem->image_name));
-                $newItem->delete();
-            }
-
-            $productImage = $this->handleCropper('product_images');
-
-            if (!empty($productImage)) {
-                if (is_array($productImage)) {
-                    foreach ($productImage as $img) {
-                        $name       = $img['output']['name'];
-                        $base64Data = $img['output']['data'];
-                        $output     = Slim::saveFile($base64Data, $name);
-
-                        $images = new ProductImages();
-
-                        $images->product_id = $product->id;
-                        $images->image_name = $output['name'];
-                        $images->save();
-                    }
-                } else {
-
-                    $images = new ProductImages();
-                    $images->product_id = $product->id;
-                    $images->image_name = $productImage;
-                    $images->save();
-                }
-            }
-        }
-
-        return redirect()->route('admin.all.product');
-    }
 
     public function storeProducts(Request $request)
     {
@@ -220,6 +172,51 @@ class ProductsController extends Controller
         return redirect()->route('admin.all.product');
     }
 
+
+    public function updateProduct(Request $request, $id)
+    {
+        $product = Products::find($id);
+        $connectedImages = ProductImages::where('product_id', $id)->get();
+
+        $product->product_name = $request['product_name'];
+        $product->description = $request['product_description'];
+        $product->detail = $request['product_detail'];
+        $product->category_id = $request['category_id'];
+        $product->supplier_id = $request['supplier_id'];
+        $product->save();
+
+        $relativeImages = \App\Models\ProductImages::where('product_id', $id)->get();
+
+        if ($request['product_images']) {
+
+            $productImage = $this->handleCropper('product_images');
+
+            if (!empty($productImage)) {
+                if (is_array($productImage)) {
+                    foreach ($productImage as $img) {
+                        $name       = $img['output']['name'];
+                        $base64Data = $img['output']['data'];
+                        $output     = Slim::saveFile($base64Data, $name);
+
+                        $images = new ProductImages();
+
+                        $images->product_id = $product->id;
+                        $images->image_name = $output['name'];
+                        $images->save();
+                    }
+                } else {
+
+                    $images = new ProductImages();
+                    $images->product_id = $product->id;
+                    $images->image_name = $productImage;
+                    $images->save();
+                }
+            }
+        }
+
+        return redirect()->route('admin.all.product');
+    }
+
     private function handleCropper($name)
     {
         $cropperImg = Slim::getImages($name);
@@ -239,12 +236,17 @@ class ProductsController extends Controller
         }
     }
 
-    public function destroyProductImage($id)
+    public function deleteProductImage($id)
     {
         $prodImage = ProductImages::find($id);
 
-        $prodImage->delete();
+        if (!is_null($prodImage)) {
 
-        return redirect()->route('edit.products');
+            unlink(public_path('frontend/prodImages' . '/' . $prodImage->image_name));
+
+            $prodImage->delete();
+        }
+
+        return redirect()->route('edit.products', $prodImage->product_id);
     }
 }

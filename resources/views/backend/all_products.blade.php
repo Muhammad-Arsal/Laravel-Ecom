@@ -42,8 +42,10 @@
                                     @endphp
                                     <tr>
                                         <th scope="row">{{ $i++ }}</th>
-                                        <td><img src="{{ asset('frontend/prodImages' . '/' . $productImages->image_name) }}"
-                                                alt="" style="width: 150px; height: 100px;"></td>
+                                        @if (!is_null($productImages))
+                                            <td><img src="{{ asset('frontend/prodImages' . '/' . $productImages->image_name) }}"
+                                                    alt="" style="width: 150px; height: 100px;"></td>
+                                        @endif
                                         <td>{{ $item->product_name }}</td>
                                         <td></td>
                                         <td></td>

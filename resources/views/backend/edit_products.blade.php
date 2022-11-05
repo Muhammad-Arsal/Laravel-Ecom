@@ -34,7 +34,8 @@
                         @forelse ($pics as $itemss)
                             <div class="col-3"><img src="{{ asset('frontend/prodImages') . '/' . $itemss->image_name }}"
                                     alt="" style="width: 100px; height:100px;">
-                                <a href=""> <button type="submit" class="btn btn-danger">Delete</button></a>
+                                <a href="{{ route('del.image', $itemss->id) }}"> <button type="button"
+                                        class="btn btn-danger"><i class="far fa-trash-alt"></i></button></a>
                             </div>
                         @empty
                             <p>No Images Found</p>
