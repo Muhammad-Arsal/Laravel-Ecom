@@ -3,7 +3,7 @@
     <div class="wrapper">
         <div class="content-wrapper">
             <h1 class="text-center"><u>Update Product</u></h1>
-            <form action="" method="post">
+            <form action="{{ route('update.products', $p_id) }}" method="post">
                 @csrf
                 <div class="container">
                     <div class="form-group">
@@ -32,13 +32,10 @@
                     @endphp
                     <div class="row">
                         @forelse ($pics as $itemss)
-                            <form action="" method="post"></form>
                             <div class="col-3"><img src="{{ asset('frontend/prodImages') . '/' . $itemss->image_name }}"
                                     alt="" style="width: 100px; height:100px;">
-                                <a href="{{ route('delete.product.image', $itemss->id) }}"> <button type="submit"
-                                        class="btn btn-danger">Delete</button></a>
+                                <a href=""> <button type="submit" class="btn btn-danger">Delete</button></a>
                             </div>
-
                         @empty
                             <p>No Images Found</p>
                         @endforelse

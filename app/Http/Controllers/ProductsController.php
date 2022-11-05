@@ -9,6 +9,7 @@ use App\Models\ProductImages;
 use App\Models\Products;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
+use PhpParser\Node\Stmt\Foreach_;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 
 class ProductsController extends Controller
@@ -111,13 +112,15 @@ class ProductsController extends Controller
 
     public function editRelativeProduct($id)
     {
+        $p_id = $id;
+
         $productDetails = Products::find($id);
 
         $suppliers = Supplier::all();
 
         $allCat = ProductCategory::all();
 
-        $data = compact('productDetails', 'suppliers', 'allCat');
+        $data = compact('productDetails', 'suppliers', 'allCat', 'p_id');
 
         return view('backend.edit_products')->with($data);
     }
@@ -125,6 +128,50 @@ class ProductsController extends Controller
     public function updateProduct(Request $request, $id)
     {
         $product = Products::find($id);
+        $connectedImages = ProductImages::where('product_id', $id)->get();
+
+        $product->product_name = $request['product_name'];
+        $product->description = $request['product_description'];
+        $product->detail = $request['product_detail'];
+        $product->category_id = $request['category_id'];
+        $product->supplier_id = $request['supplier_id'];
+        $product->save();
+
+        $relativeImages = \App\Models\ProductImages::where('product_id', $id)->get();
+
+        if ($request['product_images']) {
+
+            foreach ($relativeImages as $newItem) {
+                unlink(public_path('frontend/prodImages' . '/' . $newItem->image_name));
+                $newItem->delete();
+            }
+
+            $productImage = $this->handleCropper('product_images');
+
+            if (!empty($productImage)) {
+                if (is_array($productImage)) {
+                    foreach ($productImage as $img) {
+                        $name       = $img['output']['name'];
+                        $base64Data = $img['output']['data'];
+                        $output     = Slim::saveFile($base64Data, $name);
+
+                        $images = new ProductImages();
+
+                        $images->product_id = $product->id;
+                        $images->image_name = $output['name'];
+                        $images->save();
+                    }
+                } else {
+
+                    $images = new ProductImages();
+                    $images->product_id = $product->id;
+                    $images->image_name = $productImage;
+                    $images->save();
+                }
+            }
+        }
+
+        return redirect()->route('admin.all.product');
     }
 
     public function storeProducts(Request $request)
@@ -194,9 +241,9 @@ class ProductsController extends Controller
 
     public function destroyProductImage($id)
     {
-        $productsImages = ProductImages::find($id);
+        $prodImage = ProductImages::find($id);
 
-        $productsImages->delete();
+        $prodImage->delete();
 
         return redirect()->route('edit.products');
     }
