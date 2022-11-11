@@ -34,8 +34,8 @@
                         @forelse ($pics as $itemss)
                             <div class="col-3"><img src="{{ asset('frontend/prodImages') . '/' . $itemss->image_name }}"
                                     alt="" style="width: 100px; height:100px;">
-                                <a href="{{ route('del.image', $itemss->id) }}"> <button type="button"
-                                        class="btn btn-danger"><i class="far fa-trash-alt"></i></button></a>
+                                <button data-id="{{ $itemss->id }}" type="button" class="btn btn-danger del-but"><i
+                                        class="far fa-trash-alt"></i></button>
                             </div>
                         @empty
                             <p>No Images Found</p>
@@ -88,6 +88,24 @@
             $('#details').summernote({
                 placeholder: 'Product details',
                 height: 100
+            });
+
+            $(".del-but").on("click", function() {
+                var this_trash_button = $(this);
+                var url = "{{ route('del.image', 'id') }}";
+                var id = $(this).data("id");
+
+                url = url.replace('id', id);
+
+                var pics_area = $(this_trash_button).parent();
+
+                $.ajax({
+                    type: "get",
+                    url: url,
+                    success: function(response) {
+                        $(pics_area).remove();
+                    }
+                });
             });
         });
     </script>

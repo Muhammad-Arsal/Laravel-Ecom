@@ -68,6 +68,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/admin/supplier_area/edit_supplier/{id}', [SupplierDashController::class, 'updateSupplier'])->name('update.supplier.page');
     Route::get('/admin/supplier_area/defective_pieces', [SupplierDashController::class, 'defectivePiece'])->name('defective.pieces');
     Route::get('/admin/supplier_area/delete_supplier/{id}', [SupplierDashController::class, 'destroySupplier'])->name('delete.supplier');
+    Route::get('/admin/supplier_relative_products', [SupplierDashController::class, 'relativeSellerProducts'])->name('supplier.products');
+    Route::post('/admin/supplier_relative_products_save', [SupplierDashController::class, 'storeSupplierProducts'])->name('supplier.products.save');
 
 
     Route::get('/admin/all_product_categories', [ProductsController::class, 'allCategories'])->name('all.product.categories');

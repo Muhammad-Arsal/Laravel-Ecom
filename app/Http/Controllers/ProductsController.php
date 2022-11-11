@@ -8,6 +8,7 @@ use App\Models\ProductCategory;
 use App\Models\ProductImages;
 use App\Models\Products;
 use App\Models\Supplier;
+use App\Models\SupplierProducts;
 use Illuminate\Http\Request;
 use PhpParser\Node\Stmt\Foreach_;
 use Symfony\Component\HttpKernel\Event\RequestEvent;

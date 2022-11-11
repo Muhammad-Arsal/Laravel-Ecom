@@ -15,89 +15,39 @@
                      <div class="product_list_slider owl-carousel">
                          <div class="single_product_list_slider">
                              <div class="row align-items-center justify-content-between">
-                                 <div class="col-lg-3 col-sm-6">
-                                     <div class="single_product_item">
-                                         <img src="{{ asset('frontend/img/product/product_1.png') }}" alt="">
-                                         <div class="single_product_text">
-                                             <h4>Quartz Belt Watch</h4>
-                                             <h3>$150.00</h3>
-                                             <a href="#" class="add_cart">+ add to cart<i class="ti-heart"></i></a>
+                                 @forelse ($allProducts as $item)
+                                     @php
+                                         $relativeImage = \DB::table('product_images')
+                                             ->where('product_id', $item->id)
+                                             ->first();
+                                         
+                                         $relativePrice = \DB::table('supplier_products')
+                                             ->where('product_id', $item->id)
+                                             ->first();
+                                     @endphp
+                                     <div class="col-lg-3 col-sm-6">
+                                         <div class="single_product_item">
+                                             <img src="{{ asset('frontend/prodImages' . '/' . $relativeImage->image_name) }}"
+                                                 alt="">
+                                             <div class="single_product_text">
+                                                 <h4>{{ $item->product_name }}</h4>
+                                                 @if (!empty($relativePrice->sale_price))
+                                                     <h3>${{ $relativePrice->sale_price }}</h3>
+                                                 @else
+                                                     <h3>Not Avaliable</h3>
+                                                 @endif
+
+                                                 <a href="#" class="add_cart">+ add to cart<i
+                                                         class="ti-heart"></i></a>
+                                             </div>
                                          </div>
                                      </div>
-                                 </div>
-                                 <div class="col-lg-3 col-sm-6">
-                                     <div class="single_product_item">
-                                         <img src="{{ asset('frontend/img/product/product_2.png') }}" alt="">
-                                         <div class="single_product_text">
-                                             <h4>Quartz Belt Watch</h4>
-                                             <h3>$150.00</h3>
-                                             <a href="#" class="add_cart">+ add to cart<i class="ti-heart"></i></a>
-                                         </div>
-                                     </div>
-                                 </div>
-                                 <div class="col-lg-3 col-sm-6">
-                                     <div class="single_product_item">
-                                         <img src="{{ asset('frontend/img/product/product_3.png') }}" alt="">
-                                         <div class="single_product_text">
-                                             <h4>Quartz Belt Watch</h4>
-                                             <h3>$150.00</h3>
-                                             <a href="#" class="add_cart">+ add to cart<i class="ti-heart"></i></a>
-                                         </div>
-                                     </div>
-                                 </div>
-                                 <div class="col-lg-3 col-sm-6">
-                                     <div class="single_product_item">
-                                         <img src="{{ asset('frontend/img/product/product_4.png') }}" alt="">
-                                         <div class="single_product_text">
-                                             <h4>Quartz Belt Watch</h4>
-                                             <h3>$150.00</h3>
-                                             <a href="#" class="add_cart">+ add to cart<i class="ti-heart"></i></a>
-                                         </div>
-                                     </div>
-                                 </div>
-                                 <div class="col-lg-3 col-sm-6">
-                                     <div class="single_product_item">
-                                         <img src="{{ asset('frontend/img/product/product_5.png') }}" alt="">
-                                         <div class="single_product_text">
-                                             <h4>Quartz Belt Watch</h4>
-                                             <h3>$150.00</h3>
-                                             <a href="#" class="add_cart">+ add to cart<i class="ti-heart"></i></a>
-                                         </div>
-                                     </div>
-                                 </div>
-                                 <div class="col-lg-3 col-sm-6">
-                                     <div class="single_product_item">
-                                         <img src="{{ asset('frontend/img/product/product_6.png') }}" alt="">
-                                         <div class="single_product_text">
-                                             <h4>Quartz Belt Watch</h4>
-                                             <h3>$150.00</h3>
-                                             <a href="#" class="add_cart">+ add to cart<i class="ti-heart"></i></a>
-                                         </div>
-                                     </div>
-                                 </div>
-                                 <div class="col-lg-3 col-sm-6">
-                                     <div class="single_product_item">
-                                         <img src="{{ asset('frontend/img/product/product_7.png') }}" alt="">
-                                         <div class="single_product_text">
-                                             <h4>Quartz Belt Watch</h4>
-                                             <h3>$150.00</h3>
-                                             <a href="#" class="add_cart">+ add to cart<i class="ti-heart"></i></a>
-                                         </div>
-                                     </div>
-                                 </div>
-                                 <div class="col-lg-3 col-sm-6">
-                                     <div class="single_product_item">
-                                         <img src="{{ asset('frontend/img/product/product_8.png') }}" alt="">
-                                         <div class="single_product_text">
-                                             <h4>Quartz Belt Watch</h4>
-                                             <h3>$150.00</h3>
-                                             <a href="#" class="add_cart">+ add to cart<i class="ti-heart"></i></a>
-                                         </div>
-                                     </div>
-                                 </div>
+                                 @empty
+                                 @endforelse
+
                              </div>
                          </div>
-                         <div class="single_product_list_slider">
+                         {{-- <div class="single_product_list_slider">
                              <div class="row align-items-center justify-content-between">
                                  <div class="col-lg-3 col-sm-6">
                                      <div class="single_product_item">
@@ -180,7 +130,7 @@
                                      </div>
                                  </div>
                              </div>
-                         </div>
+                         </div> --}}
                      </div>
                  </div>
              </div>

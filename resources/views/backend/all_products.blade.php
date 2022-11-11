@@ -44,11 +44,26 @@
                                         <th scope="row">{{ $i++ }}</th>
                                         @if (!is_null($productImages))
                                             <td><img src="{{ asset('frontend/prodImages' . '/' . $productImages->image_name) }}"
-                                                    alt="" style="width: 150px; height: 100px;"></td>
+                                                    alt="" style="width: 100px; height: 100px;"></td>
                                         @endif
                                         <td>{{ $item->product_name }}</td>
-                                        <td></td>
-                                        <td></td>
+                                        @php
+                                            $products_inventory = \DB::table('supplier_products')
+                                                ->where('product_id', $item->id)
+                                                ->first();
+                                        @endphp
+                                        @if (!empty($products_inventory->cost_price))
+                                            <td>{{ $products_inventory->cost_price }}</td>
+                                        @else
+                                            <td></td>
+                                        @endif
+
+                                        @if (!empty($products_inventory->stock))
+                                            <td>{{ $products_inventory->stock }}</td>
+                                        @else
+                                            <td></td>
+                                        @endif
+
                                         <td>{{ $catName->name }}</td>
                                         <td>
                                             <a href="{{ route('edit.products', $item->id) }}"><button type="button"

@@ -130,6 +130,8 @@
  <script src="{{ asset('frontend/js/price_rangs.js') }}"></script>
  <!-- custom js -->
  <script src="{{ asset('frontend/js/custom.js') }}"></script>
+ <script src="{{ asset('frontend/jquery.leanModal.min.js') }}"></script>
+ @yield('js')
  </body>
 
  </html>
