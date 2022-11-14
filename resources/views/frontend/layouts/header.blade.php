@@ -414,10 +414,21 @@
                                         width="40" height="40" class="rounded-circle">
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                    <a class="dropdown-item" data-target="#exampleModal"
-                                        data-toggle="modal">Login/Register</a>
+                                    @php
+                                        if (Auth::user()) {
+                                            $credentials = Auth::guard('customer')->user()->name;
+                                        }
+                                        
+                                    @endphp
+                                    @if (!empty($credentials))
+                                        <a class="dropdown-item customer_name" data-target="#exampleModal"
+                                            data-toggle="modal">{{ $credentials }}</a>
+                                    @else
+                                        <a class="dropdown-item customer_name" data-target="#exampleModal"
+                                            data-toggle="modal">Login/Register</a>
+                                    @endif
                                     <a class="dropdown-item" href="#">Dashboard</a>
-                                    <a class="dropdown-item" href="#">Log Out</a>
+                                    <a class="dropdown-item" href="{{ route('customer.logout') }}">Log Out</a>
                                 </div>
                             </li>
                         </ul>
@@ -464,20 +475,21 @@
                     <br>
                     <br>
                     <div class="cont">
-                        <div class="form sign-in">
-                            <h2>Welcome</h2>
-                            <label>
-                                <span>Email</span>
-                                <input type="email" />
-                            </label>
-                            <label>
-                                <span>Password</span>
-                                <input type="password" />
-                            </label>
-                            <p class="forgot-pass">Forgot password?</p>
-                            <button type="button" class="submit">Sign In</button>
-
-                        </div>
+                        <form action="{{ route('login.customer') }}" method="post" id="sign_in">
+                            @csrf
+                            <div class="form sign-in">
+                                <h2>Welcome</h2>
+                                <label>
+                                    <span>Email</span>
+                                    <input type="email" name="email" />
+                                </label>
+                                <label>
+                                    <span>Password</span>
+                                    <input type="password" name="password" />
+                                </label>
+                                <button type="submit" class="submit login_form_button">Log In</button>
+                            </div>
+                        </form>
                         <div class="sub-cont">
                             <div class="img">
                                 <div class="img__text m--up">
@@ -493,23 +505,25 @@
                                     <span class="m--in">Sign In</span>
                                 </div>
                             </div>
-                            <div class="form sign-up">
-                                <h2>Create your Account</h2>
-                                <label>
-                                    <span>Name</span>
-                                    <input type="text" />
-                                </label>
-                                <label>
-                                    <span>Email</span>
-                                    <input type="email" />
-                                </label>
-                                <label>
-                                    <span>Password</span>
-                                    <input type="password" />
-                                </label>
-                                <button type="button" class="submit">Sign Up</button>
-
-                            </div>
+                            <form action="{{ route('register.customer') }}" method="post">
+                                @csrf
+                                <div class="form sign-up">
+                                    <h2>Create your Account</h2>
+                                    <label>
+                                        <span>Name</span>
+                                        <input type="text" name="name" />
+                                    </label>
+                                    <label>
+                                        <span>Email</span>
+                                        <input type="email" name="email" />
+                                    </label>
+                                    <label>
+                                        <span>Password</span>
+                                        <input type="password" name="password" />
+                                    </label>
+                                    <button type="submit" class="submit">Register</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
 
@@ -522,6 +536,28 @@
         <script>
             document.querySelector('.img__btn').addEventListener('click', function() {
                 document.querySelector('.cont').classList.toggle('s--signup');
+            });
+
+            $(document).ready(function() {
+                $(".login_form_button").click(function(e) {
+                    e.preventDefault();
+                    var form_data = $("#sign_in").serialize();
+                    $.ajax({
+                        type: "post",
+                        url: "{{ route('login.customer') }}",
+                        data: form_data,
+                        success: function(response) {
+                            $(response).each(function(index, element) {
+                                $(".customer_name").replaceWith(
+                                    '<a class="dropdown-item">' + element.credentials +
+                                    '</a>');
+
+                                $('#exampleModal').modal('hide');
+                            });
+                        }
+                    });
+                });
+
             });
         </script>
     @endsection

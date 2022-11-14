@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminCategoryController;
 use App\Http\Controllers\AdminMain;
+use App\Http\Controllers\CustomerLoginController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\BlogDetailsController;
 use App\Http\Controllers\CategoryController;
@@ -41,7 +42,12 @@ Auth::routes();
 
 Route::get('/admin', [LoginController::class, 'showLoginForm'])->name('login.form');
 
+Route::post('/register_customer', [CustomerLoginController::class, 'registerCustomer'])->name('register.customer');
+Route::post('/login_customer', [CustomerLoginController::class, 'login'])->name('login.customer');
+Route::get('/delete_customer', [CustomerLoginController::class, 'logout'])->name('customer.logout');
+
 Route::middleware('auth')->group(function () {
+
     Route::get('/admin/dashboard', [AdminMain::class, 'dashboard'])->name('dashboard');
     Route::get('/admin/logout', [LoginController::class, 'logout'])->name('admin.logout');
 
