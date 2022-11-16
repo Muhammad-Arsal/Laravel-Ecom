@@ -37,8 +37,11 @@
                                                      <h3>Not Avaliable</h3>
                                                  @endif
 
-                                                 <a href="#" class="add_cart">+ add to cart<i
-                                                         class="ti-heart"></i></a>
+                                                 <a href="#" class="add_cart" data-product_id="{{ $item->id }}">+
+                                                     add to cart
+                                                     <i @if (Auth::guard('customer')->check()) style="display: block" @else style="display: none" @endif
+                                                         class="ti-heart heart"></i>
+                                                 </a>
                                              </div>
                                          </div>
                                      </div>
@@ -160,3 +163,25 @@
      </section>
      <!--::subscribe_area part end::-->
  @endsection
+
+ @push('JS')
+     <script>
+         $(document).ready(function() {
+             $(".add_cart").click(function(e) {
+                 e.preventDefault();
+                 var id = $(this).data('product_id');
+
+                 $.ajax({
+                     type: "get",
+                     url: "{{ route('add.to.cart') }}",
+                     data: {
+                         product_id: id
+                     },
+                     success: function(response) {
+                         $(".cart_count").attr('value', response.count);
+                     }
+                 });
+             })
+         });
+     </script>
+ @endpush

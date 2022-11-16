@@ -132,6 +132,7 @@
  <script src="{{ asset('frontend/js/custom.js') }}"></script>
  <script src="{{ asset('frontend/jquery.leanModal.min.js') }}"></script>
  @yield('js')
+ @stack('JS')
  </body>
 
  </html>

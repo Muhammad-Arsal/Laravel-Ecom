@@ -28,6 +28,7 @@
     <!-- style CSS -->
     <link rel="stylesheet" href="{{ asset('frontend/css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('frontend/modal.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <style>
         .badge:after {
             content: attr(value);
@@ -397,8 +398,24 @@
                             <a id="search_1" href="javascript:void(0)"><i class="ti-search"></i></a>
                             <a href=""><i class="ti-heart"></i></a>
                             <div class="dropdown cart">
-                                <a href="cart.php"><i class="fa badge cart_count"
-                                        style="font-size:14px; margin-left: 15px;" value="">&#xf07a;</i></a>
+                                <a href="{{ route('user.cart') }}"><i class="fa badge cart_count"
+                                        style="font-size:14px; margin-left: 15px;"
+                                        value="@php if(Auth::guard('customer')->check()){
+
+                                            $user_id = Auth::guard('customer')->id();
+
+                                            $user_cart = \DB::table('user_cart')->where("user_id",$user_id)->get();
+
+                                            $cart_count = count($user_cart);
+                                            
+                                            echo $cart_count;
+                                        }elseif (session('user.cart')) {
+                                            $count_cart = count(session('user.cart'));
+
+                                            echo $count_cart;
+                                        }else{
+                                            echo 0;
+                                        } @endphp">&#xf07a;</i></a>
                                 <!-- <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <div class="single_product">
 
@@ -415,14 +432,12 @@
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                     @php
-                                        if (Auth::user()) {
+                                        if (Auth::guard('customer')->user()) {
                                             $credentials = Auth::guard('customer')->user()->name;
                                         }
-                                        
                                     @endphp
                                     @if (!empty($credentials))
-                                        <a class="dropdown-item customer_name" data-target="#exampleModal"
-                                            data-toggle="modal">{{ $credentials }}</a>
+                                        <a class="dropdown-item customer_name">{{ $credentials }}</a>
                                     @else
                                         <a class="dropdown-item customer_name" data-target="#exampleModal"
                                             data-toggle="modal">Login/Register</a>
@@ -532,7 +547,7 @@
             </div>
         </div>
     </div>
-    @section('js')
+    @push('JS')
         <script>
             document.querySelector('.img__btn').addEventListener('click', function() {
                 document.querySelector('.cont').classList.toggle('s--signup');
@@ -551,13 +566,13 @@
                                 $(".customer_name").replaceWith(
                                     '<a class="dropdown-item">' + element.credentials +
                                     '</a>');
-
                                 $('#exampleModal').modal('hide');
+                                $(".heart").css("display", "block");
+                                $(".cart_count").attr('value', element.count);
                             });
                         }
                     });
                 });
-
             });
         </script>
-    @endsection
+    @endpush

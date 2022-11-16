@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Customers;
+use App\Models\UserCart;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Testing\Constraints\CountInDatabase;
 use PhpParser\Node\Stmt\Return_;
 
 class CustomerLoginController extends Controller
@@ -48,8 +50,14 @@ class CustomerLoginController extends Controller
         $this->validateLogin($request);
 
         if ($this->attemptLogin($request)) {
-            $credentials = Auth::guard('customer')->user()->name;
-            return response()->json(['credentials' => $credentials], 200);
+
+            $user_name = Auth::guard('customer')->user()->name;
+            $user_id = Auth::guard('customer')->user()->id;
+
+            $user_cart = UserCart::where("user_id", $user_id)->get();
+            $user_cart_count = count($user_cart);
+
+            return response()->json(['credentials' => $user_name, 'count' => $user_cart_count], 200);
         }
     }
     public function showLoginForm()

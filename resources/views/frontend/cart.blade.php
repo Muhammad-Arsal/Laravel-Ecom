@@ -1,4 +1,4 @@
-@extends('frontend.layouts.main');
+@extends('frontend.layouts.main')
 @section('main_section')
     <!--================Cart Area =================-->
     <section class="cart_area padding_top">
@@ -15,94 +15,69 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
-                                    <div class="media">
-                                        <div class="d-flex">
-                                            <img src="img/product/single-product/cart-1.jpg" alt="" />
+                            @php
+                                if (Auth::guard('customer')->check()) {
+                                    $user_id = Auth::guard('customer')->id();
+                                
+                                    $user_cart_prodcuts = \DB::table('user_cart')
+                                        ->where('user_id', $user_id)
+                                        ->get();
+                                }
+                            @endphp
+                            @forelse ($user_cart_prodcuts as $item)
+                                @php
+                                    $product_details = \DB::table('products')
+                                        ->where('id', $item->product_id)
+                                        ->first();
+                                    $product_price = \DB::table('supplier_products')
+                                        ->where('product_id', $item->product_id)
+                                        ->first();
+                                @endphp
+                                <tr>
+                                    <td>
+                                        <div class="media">
+                                            <div class="d-flex">
+                                                <img src="" alt="" />
+                                            </div>
+                                            <div class="media-body">
+                                                <p>{{ $product_details->product_name }}</p>
+                                            </div>
                                         </div>
-                                        <div class="media-body">
-                                            <p>Minimalistic shop for multipurpose use</p>
+                                    </td>
+                                    <td>
+                                        <h5>{{ $product_price->sale_price }}$</h5>
+                                    </td>
+                                    <td>
+                                        <div class="">
+                                            <div class="col-12">
+                                                <div class="row">
+                                                    <div class="col-2">
+
+                                                        <input type="button" data-id="" onclick="" value="-"
+                                                            class="minus" />
+                                                    </div>
+                                                    <div class="col-8">
+
+                                                        <input type="text" readonly name="quantity" value=""
+                                                            maxlength="2" size="1" max="" id="number" />
+                                                    </div>
+                                                    <div class="col-2">
+
+                                                        <input type="button" data-stock="" data-id="" onclick=""
+                                                            value="+" class="plus" />
+                                                    </div>
+
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <h5>$360.00</h5>
-                                </td>
-                                <td>
-                                    <div class="product_count">
-                                        <span class="input-number-decrement"> <i class="ti-angle-down"></i></span>
-                                        <input class="input-number" type="text" value="1" min="0"
-                                            max="10">
-                                        <span class="input-number-increment"> <i class="ti-angle-up"></i></span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <h5>$720.00</h5>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="media">
-                                        <div class="d-flex">
-                                            <img src="img/product/single-product/cart-1.jpg" alt="" />
-                                        </div>
-                                        <div class="media-body">
-                                            <p>Minimalistic shop for multipurpose use</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <h5>$360.00</h5>
-                                </td>
-                                <td>
-                                    <div class="product_count">
-                                        <!-- <input type="text" value="1" min="0" max="10" title="Quantity:"
-                                      class="input-text qty input-number" />
-                                    <button
-                                      class="increase input-number-increment items-count" type="button">
-                                      <i class="ti-angle-up"></i>
-                                    </button>
-                                    <button
-                                      class="reduced input-number-decrement items-count" type="button">
-                                      <i class="ti-angle-down"></i>
-                                    </button> -->
-                                        <span class="input-number-decrement"> <i class="ti-angle-down"></i></span>
-                                        <input class="input-number" type="text" value="1" min="0"
-                                            max="10">
-                                        <span class="input-number-increment"> <i class="ti-angle-up"></i></span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <h5>$720.00</h5>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="media">
-                                        <div class="d-flex">
-                                            <img src="img/product/single-product/cart-1.jpg" alt="" />
-                                        </div>
-                                        <div class="media-body">
-                                            <p>Minimalistic shop for multipurpose use</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <h5>$360.00</h5>
-                                </td>
-                                <td>
-                                    <div class="product_count">
-                                        <span class="input-number-decrement"> <i class="ti-angle-down"></i></span>
-                                        <input class="input-number" type="text" value="1" min="0"
-                                            max="10">
-                                        <span class="input-number-increment"> <i class="ti-angle-up"></i></span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <h5>$720.00</h5>
-                                </td>
-                            </tr>
+                                    </td>
+                                    <td>
+                                        <h5>$720.00</h5>
+                                    </td>
+                                </tr>
+                            @empty
+                            @endforelse
+
                             <tr class="bottom_button">
                                 <td>
                                     <a class="btn_1" href="#">Update Cart</a>

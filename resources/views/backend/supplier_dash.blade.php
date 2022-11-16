@@ -25,12 +25,11 @@
                         @php
                             $bill_no_generator = \DB::table('supplier_bill_detail')
                                 ->latest()
-                                ->get();
+                                ->first();
                             $b_n;
                             $latest_bill_no;
-                            foreach ($bill_no_generator as $items) {
-                                $b_n = $items->bill_no;
-                            }
+                            $b_n = $bill_no_generator->bill_no;
+                            
                             if (!empty($b_n)) {
                                 $last_number = substr($b_n, 6);
                                 $new_last_number = ++$last_number;
@@ -38,6 +37,7 @@
                             } else {
                                 $latest_bill_no = 'AMD' . '_' . '001';
                             }
+                            
                         @endphp
                         <div class="col-6">
                             <div class="form-group">

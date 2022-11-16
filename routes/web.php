@@ -13,6 +13,7 @@ use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\SiteBlogController;
 use App\Http\Controllers\SupplierDashController;
+use App\Http\Controllers\UserCartController;
 use App\Models\ProductCategory;
 use App\Models\Products;
 use Illuminate\Support\Facades\Auth;
@@ -37,6 +38,7 @@ Route::get('/shop', [ShopController::class, 'index'])->name('shop.category');
 Route::get('/blog', [SiteBlogController::class, 'index'])->name('blog.page');
 Route::get('/blog/{id}', [CategoryController::class, 'show'])->name('category.with.id');
 Route::get('/blog_details/{id}', [BlogDetailsController::class, 'index'])->name('blog.details');
+Route::get('/user_cart', [UserCartController::class, 'index'])->name('user.cart');
 
 Auth::routes();
 
@@ -45,6 +47,7 @@ Route::get('/admin', [LoginController::class, 'showLoginForm'])->name('login.for
 Route::post('/register_customer', [CustomerLoginController::class, 'registerCustomer'])->name('register.customer');
 Route::post('/login_customer', [CustomerLoginController::class, 'login'])->name('login.customer');
 Route::get('/delete_customer', [CustomerLoginController::class, 'logout'])->name('customer.logout');
+Route::get('/add_to_cart', [UserCartController::class, 'addCart'])->name('add.to.cart');
 
 Route::middleware('auth')->group(function () {
 
