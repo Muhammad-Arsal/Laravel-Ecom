@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\UserCart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -28,19 +29,38 @@ class UserCartController extends Controller
 
             $product_id = $request->product_id;
 
-            $user_cart = new UserCart();
+            if (UserCart::where('product_id', $product_id)->exists() && UserCart::where('user_id', $user_id)->exists()) {
 
-            $user_cart->user_id = $user_id;
+                $existing_quantity = UserCart::where("product_id", $product_id)->first();
 
-            $user_cart->product_id = $product_id;
+                $number_of_existing_quantity = $existing_quantity->quantity;
 
-            $user_cart->save();
+                $cart_column_id = $existing_quantity->id;
 
-            $cart = UserCart::all();
+                $user_cart_row = UserCart::find($cart_column_id);
 
-            $count_cart = count($cart);
+                $incremented_number_of_existing_quantity = ++$number_of_existing_quantity;
 
-            return response()->json(["count" => $count_cart], 200);
+                $user_cart_row->quantity = $incremented_number_of_existing_quantity;
+
+                $user_cart_row->save();
+
+                $user_existing_cart = UserCart::where("user_id", $user_id)->sum('quantity');
+
+                return response()->json(["count" => $user_existing_cart], 200);
+            } else {
+                $user_cart = new UserCart();
+
+                $user_cart->user_id = $user_id;
+
+                $user_cart->product_id = $product_id;
+
+                $user_cart->save();
+
+                $cart = UserCart::where("user_id", $user_id)->sum('quantity');
+
+                return response()->json(["count" => $cart], 200);
+            }
         } else {
 
             if (session('user.cart')) {
@@ -64,5 +84,18 @@ class UserCartController extends Controller
 
             return response()->json(["count" => $count_cart], 200);
         }
+    }
+
+    public function cartItemDelete($id)
+    {
+        $cartItem = UserCart::find($id);
+
+        $cartItem->delete();
+
+        $number_of_items = UserCart::all();
+
+        $count_number_of_items = count($number_of_items);
+
+        return response()->json(["cartCount" => $count_number_of_items]);
     }
 }

@@ -12,76 +12,92 @@
                                 <th scope="col">Price</th>
                                 <th scope="col">Quantity</th>
                                 <th scope="col">Total</th>
+                                <th scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @php
-                                if (Auth::guard('customer')->check()) {
+
+                            @if (Auth::guard('customer')->check())
+                                @php
                                     $user_id = Auth::guard('customer')->id();
-                                
-                                    $user_cart_prodcuts = \DB::table('user_cart')
+                                    
+                                    $user_cart_products = \DB::table('user_cart')
                                         ->where('user_id', $user_id)
                                         ->get();
-                                }
-                            @endphp
-                            @forelse ($user_cart_prodcuts as $item)
-                                @php
-                                    $product_details = \DB::table('products')
-                                        ->where('id', $item->product_id)
-                                        ->first();
-                                    $product_price = \DB::table('supplier_products')
-                                        ->where('product_id', $item->product_id)
-                                        ->first();
                                 @endphp
-                                <tr>
-                                    <td>
-                                        <div class="media">
-                                            <div class="d-flex">
-                                                <img src="" alt="" />
-                                            </div>
-                                            <div class="media-body">
-                                                <p>{{ $product_details->product_name }}</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <h5>{{ $product_price->sale_price }}$</h5>
-                                    </td>
-                                    <td>
-                                        <div class="">
-                                            <div class="col-12">
-                                                <div class="row">
-                                                    <div class="col-2">
-
-                                                        <input type="button" data-id="" onclick="" value="-"
-                                                            class="minus" />
-                                                    </div>
-                                                    <div class="col-8">
-
-                                                        <input type="text" readonly name="quantity" value=""
-                                                            maxlength="2" size="1" max="" id="number" />
-                                                    </div>
-                                                    <div class="col-2">
-
-                                                        <input type="button" data-stock="" data-id="" onclick=""
-                                                            value="+" class="plus" />
-                                                    </div>
-
+                                @forelse ($user_cart_products as $item)
+                                    @php
+                                        $product_details = \DB::table('products')
+                                            ->where('id', $item->product_id)
+                                            ->first();
+                                        $product_price = \DB::table('supplier_products')
+                                            ->where('product_id', $item->product_id)
+                                            ->first();
+                                        $number_of_item_in_cart = \DB::table('user_cart')
+                                            ->where('product_id', $item->product_id)
+                                            ->sum('quantity');
+                                    @endphp
+                                    <tr class="cart_products_main_field">
+                                        <td>
+                                            <div class="media">
+                                                <div class="d-flex">
+                                                    <img src="" alt="" />
+                                                </div>
+                                                <div class="media-body">
+                                                    <p>{{ $product_details->product_name }}</p>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <h5>$720.00</h5>
-                                    </td>
-                                </tr>
-                            @empty
-                            @endforelse
+                                        </td>
+                                        <td>
+                                            <h5>{{ $product_price->sale_price }}$</h5>
+                                        </td>
+                                        <td>
+                                            <div class="">
+                                                <div class="col-12">
+                                                    <div class="row">
+                                                        <div class="col-2">
 
+                                                            <input type="button" data-id="{{ $product_details->id }}"
+                                                                onclick="decrementValue(this)" value="-"
+                                                                class="minus" />
+                                                        </div>
+                                                        <div class="col-8">
+
+                                                            <input type="text" readonly name="quantity"
+                                                                value="{{ $number_of_item_in_cart }}" maxlength="2"
+                                                                size="1" max="{{ $product_price->stock }}"
+                                                                id="number" />
+                                                        </div>
+                                                        <div class="col-2">
+
+                                                            <input type="button" data-stock="{{ $product_price->stock }}"
+                                                                data-id="{{ $product_details->id }}"
+                                                                onclick="incrementValue(this,{{ $product_price->stock }})"
+                                                                value="+" class="plus" />
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <h5>$720.00</h5>
+                                        </td>
+                                        <td>
+                                            <i style="color: red;"
+                                                class="fa fa-trash delete_product d-flex justify-content-center"
+                                                data-id="{{ $item->id }}"></i>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <p>nothing Found</p>
+                                @endforelse
+                            @endif
                             <tr class="bottom_button">
                                 <td>
                                     <a class="btn_1" href="#">Update Cart</a>
                                 </td>
+                                <td></td>
                                 <td></td>
                                 <td></td>
                                 <td>
@@ -89,8 +105,10 @@
                                         <a class="btn_1" href="#">Close Coupon</a>
                                     </div>
                                 </td>
+
                             </tr>
                             <tr>
+                                <td></td>
                                 <td></td>
                                 <td></td>
                                 <td>
@@ -100,7 +118,9 @@
                                     <h5>$2160.00</h5>
                                 </td>
                             </tr>
-                            <tr class="shipping_area">
+
+
+                            {{-- <tr class="shipping_area">
                                 <td></td>
                                 <td></td>
                                 <td>
@@ -140,7 +160,7 @@
                                         <a class="btn_1" href="#">Update Details</a>
                                     </div>
                                 </td>
-                            </tr>
+                            </tr> --}}
                         </tbody>
                     </table>
                     <div class="checkout_btn_inner float-right">
@@ -152,3 +172,55 @@
     </section>
     <!--================End Cart Area =================-->
 @endsection
+
+@push('JS')
+    <script>
+        function incrementValue(e, max) {
+            var previous = $(e).parent().parent().find('#number');
+            var value = parseInt($(previous).val(), 10);
+            value = isNaN(value) ? 0 : value;
+            if (value < max) {
+                value++;
+                $(previous).val(value);
+            }
+        }
+
+        function decrementValue(e) {
+            var next = $(e).parent().parent().find('#number');
+            var value = parseInt($(next).val(), 10);
+            value = isNaN(value) ? 0 : value;
+            if (value > 0) {
+                value--;
+                $(next).val(value);
+            }
+        }
+        $(document).ready(function() {
+
+            $(".delete_product").click(function(e) {
+
+                e.preventDefault();
+
+                var url = "{{ route('delete.cart.item', 'id') }}";
+
+                var id = $(this).data("id");
+
+                url = url.replace('id', id);
+
+                var main_field = $(this).parent().parent();
+
+                $.ajax({
+                    type: "get",
+                    url: url,
+                    success: function(response) {
+                        $(response).each(function(index, element) {
+                            $(main_field).remove();
+                            $(".cart_count").attr('value', element.cartCount);
+                        });
+                    }
+                });
+            });
+
+
+        });
+    </script>
+@endpush

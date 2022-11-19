@@ -365,8 +365,8 @@
             <div class="row align-items-center">
                 <div class="col-lg-12">
                     <nav class="navbar navbar-expand-lg navbar-light">
-                        <a class="navbar-brand" href="index.html"> <img src="{{ asset('frontend/img/logo.png') }}"
-                                alt="logo"> </a>
+                        <a class="navbar-brand" href="{{ route('main_page') }}"> <img
+                                src="{{ asset('frontend/img/logo.png') }}" alt="logo"> </a>
                         <button class="navbar-toggler" type="button" data-toggle="collapse"
                             data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                             aria-expanded="false" aria-label="Toggle navigation">
@@ -404,11 +404,9 @@
 
                                             $user_id = Auth::guard('customer')->id();
 
-                                            $user_cart = \DB::table('user_cart')->where("user_id",$user_id)->get();
-
-                                            $cart_count = count($user_cart);
+                                            $user_cart = \DB::table('user_cart')->where("user_id",$user_id)->sum('quantity');
                                             
-                                            echo $cart_count;
+                                            echo $user_cart;
                                         }elseif (session('user.cart')) {
                                             $count_cart = count(session('user.cart'));
 

@@ -47,7 +47,9 @@ Route::get('/admin', [LoginController::class, 'showLoginForm'])->name('login.for
 Route::post('/register_customer', [CustomerLoginController::class, 'registerCustomer'])->name('register.customer');
 Route::post('/login_customer', [CustomerLoginController::class, 'login'])->name('login.customer');
 Route::get('/delete_customer', [CustomerLoginController::class, 'logout'])->name('customer.logout');
+
 Route::get('/add_to_cart', [UserCartController::class, 'addCart'])->name('add.to.cart');
+Route::get('/delete_cart_items/{id}', [UserCartController::class, 'cartItemDelete'])->name('delete.cart.item');
 
 Route::middleware('auth')->group(function () {
 
