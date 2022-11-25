@@ -407,7 +407,9 @@
                                             $user_cart = \DB::table('user_cart')->where("user_id",$user_id)->sum('quantity');
                                             
                                             echo $user_cart;
+        
                                         }elseif (session('user.cart')) {
+                                            
                                             $count_cart = count(session('user.cart'));
 
                                             echo $count_cart;

@@ -54,10 +54,9 @@ class CustomerLoginController extends Controller
             $user_name = Auth::guard('customer')->user()->name;
             $user_id = Auth::guard('customer')->user()->id;
 
-            $user_cart = UserCart::where("user_id", $user_id)->get();
-            $user_cart_count = count($user_cart);
+            $user_cart = UserCart::where("user_id", $user_id)->sum('quantity');
 
-            return response()->json(['credentials' => $user_name, 'count' => $user_cart_count], 200);
+            return response()->json(['credentials' => $user_name, 'count' => $user_cart], 200);
         }
     }
     public function showLoginForm()

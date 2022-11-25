@@ -38,7 +38,6 @@ Route::get('/shop', [ShopController::class, 'index'])->name('shop.category');
 Route::get('/blog', [SiteBlogController::class, 'index'])->name('blog.page');
 Route::get('/blog/{id}', [CategoryController::class, 'show'])->name('category.with.id');
 Route::get('/blog_details/{id}', [BlogDetailsController::class, 'index'])->name('blog.details');
-Route::get('/user_cart', [UserCartController::class, 'index'])->name('user.cart');
 
 Auth::routes();
 
@@ -48,8 +47,10 @@ Route::post('/register_customer', [CustomerLoginController::class, 'registerCust
 Route::post('/login_customer', [CustomerLoginController::class, 'login'])->name('login.customer');
 Route::get('/delete_customer', [CustomerLoginController::class, 'logout'])->name('customer.logout');
 
+Route::get('/user_cart', [UserCartController::class, 'index'])->name('user.cart');
 Route::get('/add_to_cart', [UserCartController::class, 'addCart'])->name('add.to.cart');
 Route::get('/delete_cart_items/{id}', [UserCartController::class, 'cartItemDelete'])->name('delete.cart.item');
+Route::get('/delete_session_cart_item', [UserCartController::class, 'sessionCartItemDelete'])->name('delete.session.cart');
 
 Route::middleware('auth')->group(function () {
 

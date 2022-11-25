@@ -1,5 +1,6 @@
 @extends('frontend.layouts.main')
 @section('main_section')
+
     <!--================Cart Area =================-->
     <section class="cart_area padding_top">
         <div class="container">
@@ -81,7 +82,8 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <h5>$720.00</h5>
+                                            <h5 class="relative_total">
+                                                {{ $number_of_item_in_cart * $product_price->sale_price }}$</h5>
                                         </td>
                                         <td>
                                             <i style="color: red;"
@@ -92,7 +94,84 @@
                                 @empty
                                     <p>nothing Found</p>
                                 @endforelse
+                            @else
+                                @if (session('user.cart'))
+                                    @php
+                                        $key = session('user.cart');
+                                        $key_count_values = array_count_values($key);
+                                    @endphp
+                                    @forelse ($key_count_values as $key=>$value)
+                                        @php
+                                            
+                                            $product_id = $key;
+                                            $product_details = \DB::table('products')
+                                                ->where('id', $product_id)
+                                                ->first();
+                                            $product_price = \DB::table('supplier_products')
+                                                ->where('product_id', $product_id)
+                                                ->first();
+                                            
+                                        @endphp
+                                        <tr>
+                                            <td>
+                                                <div class="media">
+                                                    <div class="d-flex">
+                                                        <img src="" alt="" />
+                                                    </div>
+                                                    <div class="media-body">
+                                                        <p>{{ $product_details->product_name }}</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <h5>${{ $product_price->sale_price }}</h5>
+                                            </td>
+                                            <td>
+                                                <div class="">
+                                                    <div class="col-12">
+                                                        <div class="row">
+                                                            <div class="col-2">
+
+                                                                <input type="button" data-id="{{ $product_id }}"
+                                                                    onclick="decrementValue(this)" value="-"
+                                                                    class="minus" />
+                                                            </div>
+                                                            <div class="col-8">
+
+                                                                <input type="text" readonly name="quantity"
+                                                                    value="{{ $value }}" maxlength="2"
+                                                                    size="1" max="{{ $product_price->stock }}"
+                                                                    id="number" />
+                                                            </div>
+                                                            <div class="col-2">
+
+                                                                <input type="button"
+                                                                    data-stock="{{ $product_price->stock }}"
+                                                                    data-id="{{ $product_id }}"
+                                                                    onclick="incrementValue(this,{{ $product_price->stock }})"
+                                                                    value="+" class="plus" />
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <h5 class="relative_total">${{ $value * $product_price->sale_price }}</h5>
+                                            </td>
+                                            <td>
+                                                <i style="color: red;"
+                                                    class="fa fa-trash session_delete_product d-flex justify-content-center"
+                                                    data-id="{{ $key }}"></i>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <p>No Products Added</p>
+                                    @endforelse
+                                @endif
                             @endif
+
+
                             <tr class="bottom_button">
                                 <td>
                                     <a class="btn_1" href="#">Update Cart</a>
@@ -115,7 +194,7 @@
                                     <h5>Subtotal</h5>
                                 </td>
                                 <td>
-                                    <h5>$2160.00</h5>
+                                    <h5 class="current_sub_total"></h5>
                                 </td>
                             </tr>
 
@@ -196,6 +275,8 @@
         }
         $(document).ready(function() {
 
+
+
             $(".delete_product").click(function(e) {
 
                 e.preventDefault();
@@ -219,6 +300,48 @@
                     }
                 });
             });
+
+            $(".session_delete_product").click(function(e) {
+                var main_parent = $(this).parent().parent();
+
+                e.preventDefault();
+
+                var session_key = $(this).data("id");
+
+                var url = "{{ route('delete.session.cart') }}";
+
+                $.ajax({
+                    type: "get",
+                    url: url,
+                    data: {
+                        key: session_key,
+                    },
+                    success: function(response) {
+                        $(response).each(function(index, element) {
+                            $(main_parent).remove();
+                            $(".cart_count").attr('value', element.cartCount);
+                        });
+                    }
+                });
+
+            });
+
+            function sub_totaling_function() {
+
+                var sum_of_all_values = 0;
+
+                $(".relative_total").each(function(index, element) {
+                    var current = $(this).text();
+
+                    var current_value_conversion = parseInt(current.split('$'));
+
+                    sum_of_all_values = sum_of_all_values + current_value_conversion;
+                });
+
+                $('.current_sub_total').text(sum_of_all_values + "$");
+            }
+
+            sub_totaling_function();
 
 
         });

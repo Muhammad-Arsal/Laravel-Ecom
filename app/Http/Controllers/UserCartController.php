@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\UserCart;
+use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,6 +24,7 @@ class UserCartController extends Controller
 
     public function addCart(Request $request)
     {
+
         if (Auth::guard('customer')->check()) {
 
             $user_id = Auth::guard('customer')->id();
@@ -92,10 +94,32 @@ class UserCartController extends Controller
 
         $cartItem->delete();
 
-        $number_of_items = UserCart::all();
+        $user_id = Auth::guard('customer')->id();
 
-        $count_number_of_items = count($number_of_items);
+        $number_of_items = UserCart::where("user_id", $user_id)->sum('quantity');
 
-        return response()->json(["cartCount" => $count_number_of_items]);
+        return response()->json(["cartCount" => $number_of_items]);
+    }
+
+    public function sessionCartItemDelete(Request $request)
+    {
+        $key = $request->key;
+
+        $session_quantity = array_key_last(session('user.cart'));
+
+        $demo_array = session('user.cart');
+
+        for ($i = 0; $i < $session_quantity; ++$i) {
+            if (in_array($key, $demo_array)) {
+                $search = array_search($key, $demo_array);
+                unset($demo_array[$search]);
+            }
+        }
+
+        $request->session()->put('user.cart', $demo_array);
+
+        $count = count(session('user.cart'));
+
+        return response()->json(["cartCount" => $count]);
     }
 }
