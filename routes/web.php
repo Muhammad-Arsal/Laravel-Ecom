@@ -51,6 +51,7 @@ Route::get('/user_cart', [UserCartController::class, 'index'])->name('user.cart'
 Route::get('/add_to_cart', [UserCartController::class, 'addCart'])->name('add.to.cart');
 Route::get('/delete_cart_items/{id}', [UserCartController::class, 'cartItemDelete'])->name('delete.cart.item');
 Route::get('/delete_session_cart_item', [UserCartController::class, 'sessionCartItemDelete'])->name('delete.session.cart');
+Route::get('/add_product_quantity', [UserCartController::class, 'incrementProductQuantity'])->name('plus.quantity');
 
 Route::middleware('auth')->group(function () {
 

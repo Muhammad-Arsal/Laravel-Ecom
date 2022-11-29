@@ -72,6 +72,7 @@
                                                         <div class="col-2">
 
                                                             <input type="button" data-stock="{{ $product_price->stock }}"
+                                                                data-salePrice="{{ $product_price->sale_price }}"
                                                                 data-id="{{ $product_details->id }}"
                                                                 onclick="incrementValue(this,{{ $product_price->stock }})"
                                                                 value="+" class="plus" />
@@ -146,6 +147,7 @@
                                                             <div class="col-2">
 
                                                                 <input type="button"
+                                                                    data-salePrice="{{ $product_price->sale_price }}"
                                                                     data-stock="{{ $product_price->stock }}"
                                                                     data-id="{{ $product_id }}"
                                                                     onclick="incrementValue(this,{{ $product_price->stock }})"
@@ -253,7 +255,7 @@
 @endsection
 
 @push('JS')
-    <script>
+    <script type="text/javascript">
         function incrementValue(e, max) {
             var previous = $(e).parent().parent().find('#number');
             var value = parseInt($(previous).val(), 10);
@@ -324,6 +326,59 @@
                     }
                 });
 
+            });
+
+            $(".plus").click(function(e) {
+                e.preventDefault();
+
+                var current_product_id = $(this).data('id');
+
+                var stock = $(this).data('id');
+
+                var current_quantity = $(this).parent().parent().find('#number').val();
+
+                var sale_price = $(this).attr('data-salePrice');
+
+                var sub_total_area = $(this).parent().parent().parent().parent().parent().parent().parent()
+                    .find('.current_sub_total').text();
+
+                var relative_total_area = $(this).parent().parent().parent().parent().parent().parent()
+                    .find('.relative_total');
+
+                var sub_total_area_value = parseInt(sub_total_area.split("$"));
+
+                if (current_quantity < stock) {
+                    $.ajax({
+                        type: "get",
+                        url: "{{ route('plus.quantity') }}",
+                        data: {
+                            productId: current_product_id,
+                        },
+                        success: function(response) {
+                            $(response).each(function(index, element) {
+                                $(".cart_count").attr('value', element.count);
+
+                                $(relative_total_area).text(sale_price *
+                                    current_quantity + "$");
+
+                                var sum_of_all_values = 0;
+
+                                $(".relative_total").each(function(index, element) {
+                                    var current = $(this).text();
+
+                                    var current_value_conversion = parseInt(
+                                        current.split('$'));
+
+                                    sum_of_all_values = sum_of_all_values +
+                                        current_value_conversion;
+                                });
+
+                                $('.current_sub_total').text(sum_of_all_values + "$");
+
+                            });
+                        }
+                    });
+                }
             });
 
             function sub_totaling_function() {
