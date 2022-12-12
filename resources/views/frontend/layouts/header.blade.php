@@ -282,14 +282,12 @@
         h2 {
             width: 100%;
             font-size: 26px;
-            text-align: center;
         }
 
         label {
             display: block;
             width: 260px;
             margin: 25px auto 0;
-            text-align: center;
         }
 
         label span {
@@ -305,7 +303,6 @@
             padding-bottom: 5px;
             font-size: 16px;
             border-bottom: 1px solid rgba(0, 0, 0, 0.4);
-            text-align: center;
         }
 
         .forgot-pass {

@@ -14,6 +14,7 @@ use App\Http\Controllers\ShopController;
 use App\Http\Controllers\SiteBlogController;
 use App\Http\Controllers\SupplierDashController;
 use App\Http\Controllers\UserCartController;
+use App\Http\Controllers\UserCheckoutController;
 use App\Models\ProductCategory;
 use App\Models\Products;
 use Illuminate\Support\Facades\Auth;
@@ -38,6 +39,7 @@ Route::get('/shop', [ShopController::class, 'index'])->name('shop.category');
 Route::get('/blog', [SiteBlogController::class, 'index'])->name('blog.page');
 Route::get('/blog/{id}', [CategoryController::class, 'show'])->name('category.with.id');
 Route::get('/blog_details/{id}', [BlogDetailsController::class, 'index'])->name('blog.details');
+Route::get('/checkout', [UserCheckoutController::class, 'index'])->name('user.checkout');
 
 Auth::routes();
 
@@ -52,6 +54,7 @@ Route::get('/add_to_cart', [UserCartController::class, 'addCart'])->name('add.to
 Route::get('/delete_cart_items/{id}', [UserCartController::class, 'cartItemDelete'])->name('delete.cart.item');
 Route::get('/delete_session_cart_item', [UserCartController::class, 'sessionCartItemDelete'])->name('delete.session.cart');
 Route::get('/add_product_quantity', [UserCartController::class, 'incrementProductQuantity'])->name('plus.quantity');
+Route::get('/minus_product_quantity', [UserCartController::class, 'decrementProductQuantity'])->name('minus.quantity');
 
 Route::middleware('auth')->group(function () {
 

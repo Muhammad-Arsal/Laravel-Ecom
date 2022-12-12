@@ -149,4 +149,34 @@ class UserCartController extends Controller
             return response()->json(["count" => $user_existing_cart], 200);
         }
     }
+
+    public function decrementProductQuantity(Request $request)
+    {
+        $current_product_id = $request->productId;
+        if (Auth::guard('customer')->check()) {
+
+            $user_id = Auth::guard('customer')->id();
+
+            $passingArray = ['user_id' => $user_id, 'product_id' => $current_product_id];
+
+            $result = UserCart::where($passingArray)->first();
+
+            $id_to_change = $result->id;
+
+            $current_quantity_in_cart = $result->quantity;
+
+            $user_cart_find = UserCart::find($id_to_change);
+
+            if ($current_quantity_in_cart > 0) {
+
+                $user_cart_find->quantity = --$current_quantity_in_cart;
+
+                $user_cart_find->save();
+            }
+
+            $user_existing_cart = UserCart::where("user_id", $user_id)->sum('quantity');
+
+            return response()->json(["count" => $user_existing_cart], 200);
+        }
+    }
 }

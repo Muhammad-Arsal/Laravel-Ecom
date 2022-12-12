@@ -38,60 +38,65 @@
                                             ->where('product_id', $item->product_id)
                                             ->sum('quantity');
                                     @endphp
-                                    <tr class="cart_products_main_field">
-                                        <td>
-                                            <div class="media">
-                                                <div class="d-flex">
-                                                    <img src="" alt="" />
-                                                </div>
-                                                <div class="media-body">
-                                                    <p>{{ $product_details->product_name }}</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <h5>{{ $product_price->sale_price }}$</h5>
-                                        </td>
-                                        <td>
-                                            <div class="">
-                                                <div class="col-12">
-                                                    <div class="row">
-                                                        <div class="col-2">
-
-                                                            <input type="button" data-id="{{ $product_details->id }}"
-                                                                onclick="decrementValue(this)" value="-"
-                                                                class="minus" />
-                                                        </div>
-                                                        <div class="col-8">
-
-                                                            <input type="text" readonly name="quantity"
-                                                                value="{{ $number_of_item_in_cart }}" maxlength="2"
-                                                                size="1" max="{{ $product_price->stock }}"
-                                                                id="number" />
-                                                        </div>
-                                                        <div class="col-2">
-
-                                                            <input type="button" data-stock="{{ $product_price->stock }}"
-                                                                data-salePrice="{{ $product_price->sale_price }}"
-                                                                data-id="{{ $product_details->id }}"
-                                                                onclick="incrementValue(this,{{ $product_price->stock }})"
-                                                                value="+" class="plus" />
-                                                        </div>
-
+                                    @if ($number_of_item_in_cart > 0)
+                                        <tr class="cart_products_main_field">
+                                            <td>
+                                                <div class="media">
+                                                    <div class="d-flex">
+                                                        <img src="" alt="" />
+                                                    </div>
+                                                    <div class="media-body">
+                                                        <p>{{ $product_details->product_name }}</p>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <h5 class="relative_total">
-                                                {{ $number_of_item_in_cart * $product_price->sale_price }}$</h5>
-                                        </td>
-                                        <td>
-                                            <i style="color: red;"
-                                                class="fa fa-trash delete_product d-flex justify-content-center"
-                                                data-id="{{ $item->id }}"></i>
-                                        </td>
-                                    </tr>
+                                            </td>
+                                            <td>
+                                                <h5>{{ $product_price->sale_price }}$</h5>
+                                            </td>
+                                            <td>
+                                                <div class="">
+                                                    <div class="col-12">
+                                                        <div class="row">
+                                                            <div class="col-2">
+
+                                                                <input data-salePrice="{{ $product_price->sale_price }}"
+                                                                    type="button" data-id="{{ $product_details->id }}"
+                                                                    onclick="decrementValue(this)" value="-"
+                                                                    class="minus" />
+                                                            </div>
+                                                            <div class="col-8">
+
+                                                                <input type="text" readonly name="quantity"
+                                                                    value="{{ $number_of_item_in_cart }}" maxlength="2"
+                                                                    size="1" max="{{ $product_price->stock }}"
+                                                                    id="number" class="number text-center" />
+                                                            </div>
+                                                            <div class="col-2">
+
+                                                                <input type="button"
+                                                                    data-stock="{{ $product_price->stock }}"
+                                                                    data-salePrice="{{ $product_price->sale_price }}"
+                                                                    data-id="{{ $product_details->id }}"
+                                                                    onclick="incrementValue(this,{{ $product_price->stock }})"
+                                                                    value="+" class="plus" />
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <h5 class="relative_total">
+                                                    ${{ $number_of_item_in_cart * $product_price->sale_price }}</h5>
+                                            </td>
+                                            <td>
+                                                <i style="color: red;"
+                                                    class="fa fa-trash delete_product d-flex justify-content-center"
+                                                    data-id="{{ $item->id }}"></i>
+                                            </td>
+                                        </tr>
+                                    @endif
+
                                 @empty
                                     <p>nothing Found</p>
                                 @endforelse
@@ -113,7 +118,7 @@
                                                 ->first();
                                             
                                         @endphp
-                                        <tr>
+                                        <tr class="cart_products_main_field">
                                             <td>
                                                 <div class="media">
                                                     <div class="d-flex">
@@ -133,7 +138,8 @@
                                                         <div class="row">
                                                             <div class="col-2">
 
-                                                                <input type="button" data-id="{{ $product_id }}"
+                                                                <input data-salePrice="{{ $product_price->sale_price }}"
+                                                                    type="button" data-id="{{ $product_id }}"
                                                                     onclick="decrementValue(this)" value="-"
                                                                     class="minus" />
                                                             </div>
@@ -245,8 +251,8 @@
                         </tbody>
                     </table>
                     <div class="checkout_btn_inner float-right">
-                        <a class="btn_1" href="#">Continue Shopping</a>
-                        <a class="btn_1 checkout_btn_1" href="#">Proceed to checkout</a>
+                        <a class="btn_1" href="{{ route('main_page') }}">Continue Shopping</a>
+                        <a class="btn_1 checkout_btn_1" href="{{ route('user.checkout') }}">Proceed to checkout</a>
                     </div>
                 </div>
             </div>
@@ -276,8 +282,6 @@
             }
         }
         $(document).ready(function() {
-
-
 
             $(".delete_product").click(function(e) {
 
@@ -339,13 +343,8 @@
 
                 var sale_price = $(this).attr('data-salePrice');
 
-                var sub_total_area = $(this).parent().parent().parent().parent().parent().parent().parent()
-                    .find('.current_sub_total').text();
-
                 var relative_total_area = $(this).parent().parent().parent().parent().parent().parent()
                     .find('.relative_total');
-
-                var sub_total_area_value = parseInt(sub_total_area.split("$"));
 
                 if (current_quantity < stock) {
                     $.ajax({
@@ -361,19 +360,7 @@
                                 $(relative_total_area).text(sale_price *
                                     current_quantity + "$");
 
-                                var sum_of_all_values = 0;
-
-                                $(".relative_total").each(function(index, element) {
-                                    var current = $(this).text();
-
-                                    var current_value_conversion = parseInt(
-                                        current.split('$'));
-
-                                    sum_of_all_values = sum_of_all_values +
-                                        current_value_conversion;
-                                });
-
-                                $('.current_sub_total').text(sum_of_all_values + "$");
+                                sub_totaling_function();
 
                             });
                         }
@@ -381,24 +368,58 @@
                 }
             });
 
-            function sub_totaling_function() {
+            $(".minus").click(function(e) {
+                e.preventDefault();
 
+                var current_product_id = $(this).data('id');
+
+                var relative_total_area = $(this).parent().parent().parent().parent().parent().parent()
+                    .find('.relative_total');
+
+                var current_quantity = $(this).parent().parent().find('#number').val();
+
+                var sale_price = $(this).attr('data-salePrice');
+
+                var sum = parseInt(sale_price * current_quantity);
+
+                $.ajax({
+                    type: "get",
+                    url: "{{ route('minus.quantity') }}",
+                    data: {
+                        productId: current_product_id,
+                    },
+                    success: function(response) {
+                        $(response).each(function(index, element) {
+                            $(".cart_count").attr('value', element.count);
+
+                            $(relative_total_area).text(sum +
+                                "$");
+
+                            sub_totaling_function();
+                        });
+                    }
+                });
+
+
+            });
+
+            function sub_totaling_function() {
                 var sum_of_all_values = 0;
 
                 $(".relative_total").each(function(index, element) {
                     var current = $(this).text();
 
-                    var current_value_conversion = parseInt(current.split('$'));
+                    var current_value_exclusion = current.split("$");
+
+                    var current_value_conversion = parseInt(current_value_exclusion[1]);
 
                     sum_of_all_values = sum_of_all_values + current_value_conversion;
                 });
 
                 $('.current_sub_total').text(sum_of_all_values + "$");
+
             }
-
             sub_totaling_function();
-
-
         });
     </script>
 @endpush
