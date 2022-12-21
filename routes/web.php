@@ -6,6 +6,8 @@ use App\Http\Controllers\CustomerLoginController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\BlogDetailsController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\ConfirmationController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
@@ -55,6 +57,9 @@ Route::get('/delete_cart_items/{id}', [UserCartController::class, 'cartItemDelet
 Route::get('/delete_session_cart_item', [UserCartController::class, 'sessionCartItemDelete'])->name('delete.session.cart');
 Route::get('/add_product_quantity', [UserCartController::class, 'incrementProductQuantity'])->name('plus.quantity');
 Route::get('/minus_product_quantity', [UserCartController::class, 'decrementProductQuantity'])->name('minus.quantity');
+
+Route::post('/checkout', [CheckoutController::class, 'order_details'])->name('order.detail');
+Route::get('/confirmation', [ConfirmationController::class, 'index'])->name('confirmation.page');
 
 Route::middleware('auth')->group(function () {
 
